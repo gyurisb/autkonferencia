@@ -1,0 +1,59 @@
+﻿/* elrendezéssel kapcsolatos stílusok */
+
+table.table-event {
+    margin: 20px 0px;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #dcdcdc;
+}
+table.table-event td { 
+    padding: 10px;
+}
+td.td-event-icon {
+    width: 70px;
+}
+td.td-event-icon img {
+    height: 70px; width: 70px;
+}
+
+.hr-text, .min-text {
+    width: 60px;
+    display: inline;
+}
+.day-picker {
+    width: 120px;
+    display: inline;
+}
+
+.btn-admin {
+    margin-right: 2px;
+}
+.label-admin {
+    color: gray;
+}
+
+label.required::after {
+    content: " *";
+    color: red;
+}
+label.required {
+    margin-left: 10px;
+    margin-right: -10px;
+}
+
+/*event.create és eventsequence.create oldalak stílusa*/
+.remove { vertical-align: top; }
+.panel-label { margin-right: 10px; width: 50px; }
+.date-time-picker input { display: inline; }
+.date-time-picker { display:block; }
+.digit-2x { width: 67px; }
+.image-canvas-medium { width: 114px; height: 114px; background: #e4e4e4; background-image: url("/../Content/images/plus-medium.png") }
+.image-canvas-small { width: 60px; height: 60px; background: #e4e4e4; background-image: url("/../Content/images/plus-small.png") }
+
+table.form-table {
+    max-width: 600px;
+    width: 100%;
+    margin: 20px 0;
+}
+table.form-table tr { width: 100%; }
+table.form-table td { padding: 3px; }

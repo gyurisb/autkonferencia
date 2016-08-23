@@ -1,0 +1,135 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 600px;
+}
+.text-div {
+    max-width: 630px;
+}
+
+textarea.form-control {
+    height: 150px;
+}
+input.hasDatepicker, input.date, input[type='datetime'] {
+    width: 260px;
+}
+
+textarea.form-control.small-text {
+    height: 60px;
+}
+
+/*elemek stílusa*/
+h2 {
+    color: #8c2532;
+}
+
+footer {
+    color: #8c2532;
+}
+
+/*linkek stílusa*/
+a {
+    color: #8c2532;
+}
+a:hover {
+    color: #601b24;
+}
+
+/*fejléc stílusa*/
+.navbar {
+    background: #8c2532;
+    border-color: transparent;
+    color: white;
+}
+.navbar-inverse .navbar-nav > li > a,
+.navbar-inverse .navbar-brand {
+    color: white;
+}
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-brand:hover {
+    background: #601b24;
+}
+
+/*esemény oldal*/
+.event-table td {
+    vertical-align: top;
+}
+
+.long-text {
+    border-radius: 6px;
+    background-color: #eeeeee;
+    text-align: justify;
+    padding: 10px;
+    line-height: 25px;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+.long-text-intr {
+    padding: 5px 10px;
+}
+
+.lecturers-div {
+    margin: 20px 0;
+}
+.lecturers-div div {
+    margin-bottom: 10px;
+}
+
+.event-col2 {
+    padding-left: 20px;padding-top: 20px;
+}
+
+.event-col1 {
+    width: 100px;
+    text-align: center; padding-top: 50px;
+}
+.event-col1 img {
+    width: 150px;
+    height: 150px;
+    display: block;
+}
+.event-col1 p {
+    margin-top: 10px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.event-image {
+    height: 125px; margin-bottom: 3px;
+}
+
+.sponsor-img {
+    margin: 0 40px;
+    max-height: 200px;
+}
+
+/*eseménysorozat oldal*/
+.h4-gray {
+    color: gray;
+}
+
+div.mce-panel {
+    border: 1px solid #cccccc;
+}
+div.mce-edit-area {
+    padding-left: 12px;
+}

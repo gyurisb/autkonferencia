@@ -1,0 +1,29 @@
+﻿@model Events.Event
+
+@{
+    ViewBag.Title = "Előadás törlése";
+}
+
+<h2>Előadás törlése</h2>
+
+<h3>Biztosan törölni szeretné a következő előadást: <strong>@ViewBag.EventName</strong>?</h3>
+@if (ViewBag.DocumentCount > 0)
+{ 
+    <h4 class="text-danger">El fog veszni <strong>@ViewBag.DocumentCount</strong> feltöltött dokumentum!</h4>
+}
+@if (ViewBag.AttendeeCount > 0)
+{
+    <h4 class="text-danger">El fog veszni <strong>@ViewBag.AttendeeCount</strong> jelentkező adatai!</h4>
+}
+<div>
+    <hr />
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Törlés" class="btn btn-default" /> |
+            @Html.ActionLink("Mégsem", "Show", new { Id = Url.RequestContext.RouteData.Values["id"] })
+        </div>
+    }
+</div>

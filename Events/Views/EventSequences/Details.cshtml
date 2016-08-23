@@ -1,0 +1,68 @@
+﻿@model Events.EventSequence
+
+@{
+    ViewBag.Title = Model.Name;
+}
+
+<h2>@Model.Name</h2>
+
+<div>
+    <h4 class="h4-gray">@Model.StartDate.Value.ToString("yyyy. MMMM dd.") - @Model.EndDate.Value.ToString("yyyy. MMMM dd.")</h4>
+    @if (Model.WeekTimes != "" && Model.WeekTimes != null)
+    {
+        <h4>@String.Join(", ", Model.WeekTimeEntries)</h4>
+    }
+    <div class="long-text">
+        @Html.Raw(Model.Description)
+    </div>
+    <hr />
+</div>
+<div class="body-content">
+    <h4 class="h4-gray">Közelgő előadások</h4>
+    @foreach (var nextEvent in ViewBag.UpcomingEvents)
+    {
+        @EventEntry(nextEvent)
+    }
+    <h4 class="h4-gray">Befejeződött előadások</h4>
+    @foreach (var prevEvent in ViewBag.FinishedEvents)
+    {
+        @EventEntry(prevEvent)
+    }
+</div>
+<div>
+    @*Szponzorok*@
+    @if (Model.Sponsors.Count > 0)
+    {
+        <br />
+        <h3>Támogatók</h3>
+        foreach (var sponsor in Model.Sponsors)
+        {
+            <a href="@sponsor.Url" target="_blank"><img src="@sponsor.IconSrc" alt="@sponsor.Name" title="@sponsor.Name" class="sponsor-img" /></a>
+        }
+    }
+</div>
+
+@if (Request.IsAuthenticated)
+{
+    <hr />
+    <dl class="dl-horizontal"></dl>
+    <p class="label-admin">Admin műveletek:</p>
+    @Html.ActionLink("Szerkesztés", "Edit", new { Id = Model.Id }, new { @class = "btn btn-default btn-admin" })
+    @Html.ActionLink("Törlés", "Delete", new { Id = Model.Id }, new { @class = "btn btn-default btn-admin" })
+}
+
+@helper EventEntry(Event eventModel)
+{
+    <table class="table-event">
+        <tr>
+            <td class="td-event-icon">
+                <img src="@eventModel.IconSrc" />
+            </td>
+            <td>
+                @Html.ActionLink(eventModel.Name, "Show", "Event", new { Id = eventModel.Id, source = "sequence" }, null) <br />
+                @eventModel.Time.ToString("yyy.MM.dd. HH:mm")-@eventModel.EndTime.ToString("HH:mm"), @eventModel.Place<br />
+                @String.Join(", ", eventModel.Lecturers.Select(l => l.Name))<br />
+            </td>
+        </tr>
+    </table>
+}

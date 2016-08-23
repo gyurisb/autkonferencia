@@ -1,0 +1,149 @@
+﻿@model Events.Models.AttendEventModel
+
+@{
+    ViewBag.Title = "Jelentkezés";
+}
+
+<script type="text/javascript">
+    $(function () {
+        $("input[type='file']").change(function (e) {
+            var file = this.files[0];
+            var size = file.size || file.fileSize;
+
+            if (size > 2000000) {
+                var parent = $(this).parent();
+                parent.css({ "padding-top": "8px" });
+                parent.html("Feltöltés folyamatban...");
+
+                var data = getFileData(e);
+                var url = document.URL.replace('Attend', 'AttendBigFile');
+                ajaxUploadFile(
+                    url,
+                    data,
+                    function (result) {
+                        parent.html($('<strong>' + result + '</strong>'));
+                        $("#AttachmentHolder").val(result);
+                    },
+                    function (percentage) {
+                        parent.html(percentage + '%');
+                    }
+                );
+            }
+        });
+    });
+</script>
+
+<h2>Jelentkezés</h2>
+
+<form enctype="multipart/form-data" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>@Model.Event.Name</h4>
+        @if (Model.Event.AttendMessage != null)
+        {
+            <div class="long-text lont-text-descr">@Html.Raw(Model.Event.AttendMessage.Replace("\n", "</br>"))</div>
+        }        
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @if (Model.Visible[0])
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" + (Model.Required[0] ? " required" : "") })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        @if (Model.Visible[1])
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" + (Model.Required[1] ? " required" : "") })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        @if (Model.Visible[2])
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Company, htmlAttributes: new { @class = "control-label col-md-2" + (Model.Required[2] ? " required" : "") })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Company, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Company, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+        @if (Model.Visible[3])
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Post, htmlAttributes: new { @class = "control-label col-md-2" + (Model.Required[3] ? " required" : "") })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Post, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Post, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+        @if (Model.Visible[4])
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" + (Model.Required[4] ? " required" : "") })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+        @if (Model.Visible[5])
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Attachment, htmlAttributes: new { @class = "control-label col-md-2" + (Model.Required[5] ? " required" : "") })
+                <div class="col-md-10">
+                    <div>
+                        @if (Model.AttachmentHolder == null)
+                        { 
+                            <input type="file" name="Attachment" class="form-control" />
+                        }
+                        else
+                        {
+                            <strong>@Model.AttachmentHolder</strong>
+                        }
+                    </div>
+                    <input type="hidden" name="AttachmentHolder" id="AttachmentHolder" value="@Model.AttachmentHolder"/>
+                    @Html.ValidationMessageFor(model => model.Attachment, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+        @if (Model.Visible[6])
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-2" + (Model.Required[6] ? " required" : "") })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Mehet" class="btn btn-default" id="submit-btn"/>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    @Html.ActionLink("Vissza", "Show", "Event", new { Id = Model.Event.Id }, null)
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

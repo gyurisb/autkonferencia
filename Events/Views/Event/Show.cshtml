@@ -1,0 +1,124 @@
+﻿@model Events.Models.EventShowModel
+
+@{
+    ViewBag.Title = @Model.Event.Name;
+}
+
+<table class="event-table">
+<tr>
+    <td class="event-col1">
+        @foreach (var lecturer in @Model.Lecturers)
+        {
+            <a href="@lecturer.UrlNull" target="_blank">
+                <img src="@lecturer.AvatarSrc"/>
+                <p>@lecturer.Name</p>
+            </a>
+        }
+    </td>
+    <td class="event-col2">
+        @if (ViewBag.Attended != null)
+        {
+            <div class="alert alert-success" style="margin-top: 20px">
+                <strong>Sikeres jelentkezés!</strong><br />
+                A jelentkezését rögzítettük <strong>@ViewBag.Attended</strong> névre.
+            </div>
+        }
+        @if (Model.Event.EventSequence != null)
+        {
+            <h2 style="margin-bottom: 5px">
+                @Html.ActionLink(Model.Event.EventSequence.Name,
+                    "Details", "EventSequences", new { Id = Model.Event.EventSequence.Id },
+                    null)
+            </h2>
+        }
+        <h1 style="margin-top: 0px">@Model.Event.Name</h1>
+        <h4>@Model.Event.Time.ToString("yyy. MMMM dd. HH:mm") - @Model.Event.EndTime.ToString("HH:mm"), @Model.Event.Place</h4>
+        <div class="lecturers-div">
+            @foreach (var lecturer in Model.Lecturers)
+            {
+                <div>
+                    <strong>@lecturer.Name</strong>, @lecturer.CompanyRank
+                    @if (lecturer.Introduction != null && lecturer.Introduction != "")
+                    {
+                        <div class="long-text long-text-intr">@lecturer.Introduction</div>
+                    }
+                </div>
+            }
+        </div>
+        <p/>
+        <div class="long-text lont-text-descr">@Html.Raw(Model.Event.Description)</div>
+
+        @*Feltöltött dokumentumok*@
+        @if (Model.Files.Images.Length > 0)
+        {
+            <h3>Képek</h3>
+            foreach (var image in Model.Files.Images)
+            {
+                <a href="@image" target="_blank"><img src="@image" class="event-image" /></a>
+            }
+            <p/>
+        }
+        @if (Model.Files.Documents.Length > 0)
+        {
+            <h3>Dokumentumok</h3>
+            foreach (var document in Model.Files.Documents)
+            {
+                <a href="@document" target="_blank">@document.Substring(document.LastIndexOf('/') + 1)</a><br />
+            }
+        }
+        @if (Model.Files.EmbedVideo)
+        {
+            <h3>Videó</h3>
+            @Html.Raw(@Model.Files.EmbedHtml);
+        }
+
+        @*Szponzorok*@
+        @if (Model.Sponsors.Length > 0)
+        {
+            <br/>
+            <h3>Támogatók</h3>
+            foreach (var sponsor in Model.Sponsors)
+            {
+                <a href="@sponsor.Url" target="_blank"><img src="@sponsor.IconSrc" alt="@sponsor.Name" title="@sponsor.Name" class="sponsor-img" /></a>
+            }
+        }
+
+        @*Jelentkező gomb*@
+        @if (!Model.Started && Model.AttendEnabled)
+        {
+            <div style="margin-top: 20px">
+                @if (!Model.EventIsFull)
+                {
+                    @Html.ActionLink("Jelentkezés", "Attend", new { Id = Model.Event.Id }, new { @class = "btn btn-success" })
+                }
+                else
+                {
+                    <span class="btn btn-danger">Az előadásra nincs több férőhely</span>
+                }
+            </div>
+        }
+    </td>
+</tr>
+</table>
+<div>
+    @if (ViewBag.Source == "sequence")
+    {
+        @Html.ActionLink("Vissza", "Details", "EventSequences", new { Id = Model.Event.EventSequence.Id }, null)
+    }
+    else
+    {
+        @Html.ActionLink("Vissza", "Index", "Home")
+    }
+</div>
+
+@if (Request.IsAuthenticated)
+{ 
+    <hr />
+    <dl class="dl-horizontal"></dl>
+    <p class="label-admin">Admin műveletek:</p>
+    @Html.ActionLink("Jelentkezettek", "Attends", new { Id = Model.Event.Id }, new { @class = "btn btn-default btn-admin" })
+    @Html.ActionLink("Dokumentumok feltöltése", "Upload", new { Id = Model.Event.Id }, new { @class = "btn btn-default btn-admin" })
+    @Html.ActionLink(Model.Event.IsLocked ? "Lezárás feloldása" : "Lezárás", "ToggleLock", new { Id = Model.Event.Id }, new { @class = "btn btn-default btn-admin", @title = Model.Event.IsLocked ? "A további jelentkezések engedélyezése." : "A további jelentkezések tiltása." })
+    @Html.ActionLink("Előadás szerkesztése", "Edit", new { Id = Model.Event.Id }, new { @class = "btn btn-default btn-admin" })
+    @Html.ActionLink("Előadás törlése", "Delete", new { Id = Model.Event.Id }, new { @class = "btn btn-default btn-admin" })
+}

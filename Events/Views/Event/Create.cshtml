@@ -1,0 +1,264 @@
+﻿@model Events.Models.CreateEventModel
+
+@{
+    ViewBag.Title = "Új előadás";
+}
+@Scripts.Render("~/bundles/tinymce")
+@Scripts.Render("~/bundles/events-create")
+
+<script id="lecturer-template" type="text/x-custom-template">
+    @LecturerPanel()
+</script>
+<script id="sponsor-template" type="text/x-custom-template">
+    @SponsorPanel()
+</script>
+
+@if (Model.Name == null)
+{ 
+    <h2>Új előadás felvétele</h2>
+}
+else
+{
+    <h2>Előadás szerkesztése</h2>
+}
+
+<form enctype="multipart/form-data" method="post">
+    @Html.AntiForgeryToken()
+
+    @*<ul class="event-tabs">
+        <li><a href="#tabBase">Alap adatok</a></li>
+        <li><a href="#tabLectures">Előadók</a></li>
+        <li><a href="#tabAttends">Jelentkezés feltételei</a></li>
+    </ul>*@
+
+    <div id="tabBase" class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.EventSequenceId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("EventSequenceId", (List<SelectListItem>)ViewBag.EventSequenceIds, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.EventSequenceId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="date-time-picker">                    
+                    @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "date form-control", @style = "margin-right: 20px" } })
+                    @Html.EditorFor(model => model.HourFrom, new { htmlAttributes = new { @class = "hourFrom form-control digit-2x", @type = "number" } })
+                    <span>:</span>
+                    @Html.EditorFor(model => model.MinuteFrom, new { htmlAttributes = new { @class = "minuteFrom form-control digit-2x", @type = "number" } })
+                    <span style="margin: 0 5px">-</span>
+                    @Html.EditorFor(model => model.HourTo, new { htmlAttributes = new { @class = "hourTo form-control digit-2x", @type = "number" } })
+                    <span>:</span>
+                    @Html.EditorFor(model => model.MinuteTo, new { htmlAttributes = new { @class = "minuteTo form-control digit-2x", @type = "number" } })
+                </div>
+                <div>@Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })</div>
+                <div>@Html.ValidationMessageFor(model => model.HourFrom, "", new { @class = "text-danger" })</div>
+                <div>@Html.ValidationMessageFor(model => model.MinuteFrom, "", new { @class = "text-danger" })</div>
+                <div>@Html.ValidationMessageFor(model => model.HourTo, "", new { @class = "text-danger" })</div>
+                <div>@Html.ValidationMessageFor(model => model.MinuteTo, "", new { @class = "text-danger" })</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Place, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Place, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Place, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10 text-div">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttendeeLimit, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AttendeeLimit, new { htmlAttributes = new { @class = "form-control", @type = "number", @placeholder = "korlátlan" } })
+                @Html.ValidationMessageFor(model => model.AttendeeLimit, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LecturerNames, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="cont-lecturers">
+                    @if (Model != null && Model.LecturerNames != null)
+                    {
+                        @*if (Model.LecturerAvatars.Any(a => a != null))
+                        {
+                            <script>alert("Kérjük válassza ki az előadók képfájljait újra!")</script>
+                        }*@
+                        for (int i = 0; i < Model.LecturerNames.Length; i++)
+                        {
+                            @LecturerPanel(Model.LecturerNames[i], Model.LecturerJobs[i], Model.LecturerUrls[i], Model.LecturerDescriptions[i], Model.GetAvatarUrl(i), Model.LecturerIds[i])
+                        }
+                    }
+                </div>
+                <div>@Html.ValidationMessageFor(model => model.LecturerNames, "", new { @class = "text-danger" })</div>
+                <div><a href="" class="btn btn-success" id="add-lecturer"><i class="fa fa-plus"></i></a></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.IncludeSponsors, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.IncludeSponsors)
+                    @Html.ValidationMessageFor(model => model.IncludeSponsors, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">            
+            @Html.LabelFor(model => model.Sponsors, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="cont-sponsors auto-index">
+                    @if (Model != null && Model.Sponsors != null)
+                    {
+                        for (int i = 0; i < Model.Sponsors.Length; i++)
+                        {
+                            @SponsorPanel(Model.Sponsors[i])
+                            <div>@Html.ValidationMessageFor(model => model.Sponsors[i].Name, "", new { @class = "text-danger" })</div>
+                            <div>@Html.ValidationMessageFor(model => model.Sponsors[i].Url, "", new { @class = "text-danger" })</div>
+                        }
+                    }
+                </div>
+                <div>@Html.ValidationMessageFor(model => model.SponsorIcons, "", new { @class = "text-danger" })</div>
+                <a href="" class="btn btn-success" id="add-sponsor"><i class="fa fa-plus"></i></a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AttendMessage, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AttendMessage, new { htmlAttributes = new { @class = "form-control small-text" } })
+                @Html.ValidationMessageFor(model => model.AttendMessage, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Jelentkezés feltételei</label>
+            <div class="col-md-10">
+                <table class="form-table">
+                    <tr>
+                        <th></th>
+                        <th>Szükséges</th>
+                        <th>Látható</th>
+                    </tr>
+                    @for (int i = 0; i < Attendee.Fields.Length; i++)
+                    {
+                        <tr>
+                            <td>@Html.Label(Attendee.Fields[i], htmlAttributes: new { @class = "control-label col-md-2", @style = "width: 50%" })</td>
+                            <td>@Html.CheckBoxFor(model => model.Requireds[i], new { @class = "" })</td>
+                            <td>@Html.CheckBoxFor(model => model.Visibles[i], new { @class = "" })</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Mentés" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<div>
+    @if (Url.RequestContext.RouteData.Values["id"] != null)
+    {
+        @Html.ActionLink("Mégsem", "Show", new { Id = Url.RequestContext.RouteData.Values["id"] })
+    }
+    else
+    {
+        @Html.ActionLink("Mégsem", "Index", "Home")
+    }
+</div>
+
+@helper LecturerPanel(string name = null, string job = null, string url = null, string intr = null, string img = null, int? id = null)
+{
+    <div class="container container-lecturer required-container">
+        <input type="hidden" name="LecturerIds[]" value="@id" />
+        <table style="width: 100%" class="form-table">
+            <tr>
+                <td rowspan="3" style="width: 105px">
+                    <img class="image-canvas image-canvas-medium" src="@img" />
+                    @*<div class="image-canvas-medium">
+                        <div style="display: table-cell; vertical-align: middle; text-align: center; height: 114px; width: 114px; ">
+                            <i class="fa fa-2x fa-plus"></i>
+                        </div>
+                    </div>*@
+                </td>
+                <td width="50px"><label class="control-label panel-label">Név</label></td>
+                <td><input type="text" name="LecturerNames[]" class="form-control" value="@name" /></td>
+                <td width="20px"><a href="" class="remove"><i class="fa fa-times fa-lg" style="color: red"></i></a></td>
+            </tr>
+            <tr>
+                <td width="50px"><label class="control-label panel-label">Fogl.</label></td>
+                <td><input type="text" name="LecturerJobs[]" class="form-control" value="@job" /></td>
+            </tr>
+            <tr>
+                <td width="50px"><label class="control-label panel-label">Url</label></td>
+                <td><input type="text" name="LecturerUrls[]" class="form-control" value="@url" /></td>
+            </tr>
+            <tr>
+                <td colspan="3"><textarea name="LecturerDescriptions[]" class="form-control small-text" placeholder="Bemutatkozás">@intr</textarea></td>
+            </tr>
+        </table>
+        <input type="file" name="LecturerAvatars" class="file-uploader" style="height: 0; width: 0; visibility: hidden" hidden />
+    </div>
+}
+
+@helper SponsorPanel(Sponsor sponsor = null)
+{
+    { sponsor = sponsor ?? new Sponsor(); }
+    <div class="container container-sponsor">
+        <input type="hidden" namepattern="Sponsors[%].Id" value="@(sponsor.Id ?? 0)" />
+        <input type="hidden" namepattern="Sponsors[%].Icon" value="@sponsor.Icon" />
+        <table style="width: 100%" class="form-table">
+            <tr>
+                <td rowspan="2" style="width: 60px">
+                    <img class="image-canvas image-canvas-small" src="@sponsor.IconSrc" />
+                    @*<div class="image-canvas-small">
+                        <div style="display: table-cell; vertical-align: middle; text-align: center; height: 60px; width: 60px; ">
+                            <i class="fa fa-lg fa-plus"></i>
+                        </div>
+                    </div>*@
+                </td>
+                <td width="50px">
+                    @Html.LabelFor(model => model.Sponsors[0].Name, htmlAttributes: new { @class = "control-label panel-label" })
+                </td>
+                <td>
+                    <input type="text" namepattern="Sponsors[%].Name" class="form-control" value="@sponsor.Name" />
+                </td>
+                <td width="20px"><a href="" class="remove"><i class="fa fa-times fa-lg" style="color: red"></i></a></td>
+            </tr>
+            <tr>
+                <td width="50px">
+                    @Html.LabelFor(model => model.Sponsors[0].Url, htmlAttributes: new { @class = "control-label panel-label" })
+                </td>
+                <td><input type="text" namepattern="Sponsors[%].Url" class="form-control" value="@sponsor.Url" /></td>
+            </tr>
+        </table>
+        <input type="file" name="SponsorIcons" class="file-uploader" style="height: 0; width: 0; visibility: hidden" hidden/>
+    </div>
+}

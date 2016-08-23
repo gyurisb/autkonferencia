@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@using Events.Models;
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-info" style="margin-top: 20px">
+        @if (ViewBag.Message == "adminRequest")
+        {
+            <strong>A felhasználó létrehozva!</strong>
+            <div>A felhasználó engedélyezéséhez adminisztrátori jóváhagyás szükséges.</div>
+        }
+    </div>
+}
+@if (ViewBag.UnconfirmedUsers != null)
+{
+    foreach (ApplicationUser user in ViewBag.UnconfirmedUsers)
+    {
+        <div class="alert alert-warning" style="margin-top: 20px">
+            <p>A következő felhasználó megerősítésre vár: <strong>@user.UserName</strong></p>
+            @Html.ActionLink("Megerősítés", "Confirm", "Account", new { Id = user.Id }, new AjaxOptions { HttpMethod = "POST" }) | 
+            @Html.ActionLink("Törlés", "Delete", "Account", new { Id = user.Id }, new AjaxOptions { HttpMethod = "POST" })
+        </div>
+    }
+}
+<div class="page-header">
+    <h1>Kezdőoldal</h1>
+</div>
+<div class="body-content">
+    <h4>Közelgő előadások</h4>
+    @foreach (var nextEvent in ViewBag.UpcomingEvents)
+    {
+        @EventEntry(nextEvent)
+    }
+    <h4>Befejeződött előadások</h4>
+    @foreach (var lastEvent in ViewBag.LastEvents)
+    {
+        @EventEntry(lastEvent)
+    }
+</div>
+
+@helper EventEntry(EventViewModel eventModel)
+{
+    <table class="table-event">
+        <tr>
+            <td class="td-event-icon">
+                <img src="@eventModel.Event.IconSrc"/>
+            </td>
+            <td>
+                @if (eventModel.Event.EventSequence != null)
+                { 
+                    @Html.ActionLink(eventModel.Event.EventSequence.Name, "Details", "EventSequences", new { Id = eventModel.Event.EventSequence.Id }, null) 
+                    <i class="fa fa-angle-double-right"></i> 
+                }  
+                @Html.ActionLink(eventModel.Event.Name, "Show", "Event", new { Id = eventModel.Event.Id }, new { @style = "font-weight: bold" }) <br />
+                @eventModel.Event.Time.ToString("yyy.MM.dd. HH:mm")-@eventModel.Event.EndTime.ToString("HH:mm"), @eventModel.Event.Place<br />
+                @String.Join(", ", eventModel.Lecturers.Select(l => l.Name))<br />
+            </td>
+        </tr>
+    </table>
+}
+
+@*<div class="jumbotron">
+        <h1>ASP.NET</h1>
+        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+        <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Getting started</h2>
+            <p>
+                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
+                enables a clean separation of concerns and gives you full control over markup
+                for enjoyable, agile development.
+            </p>
+            <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Get more libraries</h2>
+            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+            <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Web Hosting</h2>
+            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+            <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+        </div>
+    </div>*@

@@ -1,0 +1,42 @@
+﻿@model IList<Events.Attendee>
+
+@{
+    ViewBag.Title = "Jelentkezések";
+}
+
+<div class="page-header">
+    <h2>@ViewBag.EventTitle</h2>
+    <h4>jelentkezettek az előadásra: <strong>@Model.Count / @ViewBag.EventLimit</strong></h4>
+</div>
+<div class="body-content">
+    @Html.ActionLink("Exportálás", "Export", new { Id = Url.RequestContext.RouteData.Values["id"] }, new { @class = "btn btn-default" })
+    <p/>
+    <table class="table">
+        <tr>
+            @foreach (var field in ViewBag.Columns)
+            {
+                <th>@field</th>
+            }
+        </tr>
+        @foreach (var attendee in Model)
+        {
+            <tr>                
+                @foreach (int i in ViewBag.FieldIndexes)
+                {
+                    if (i == Attendee.AttachmentField)
+                    {
+                        <td><a href="@attendee.AttachmentUrl" target="_blank">@attendee[i]</a></td>
+                    }
+                    else
+                    {
+                        <td>@attendee[i]</td>
+                    }
+                }
+            </tr>
+        }
+    </table>
+</div>
+<hr />
+<div>
+    @Html.ActionLink("Vissza", "Show", new { Id = ViewBag.EventId })
+</div>

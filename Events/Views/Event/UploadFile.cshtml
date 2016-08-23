@@ -1,0 +1,16 @@
+﻿@model System.Collections.Generic.IEnumerable<string>
+@{
+    ViewBag.Title = "UploadFile";
+}
+
+@foreach (var link in Model)
+{
+    <span>
+        <a href="@link" target="_blank">@link.Replace('\\', '/').Substring(link.LastIndexOf('/') + 1)</a>
+        <a href="@link" class="fileDeleteBtn">
+            <i class="fa fa-times fa-lg" style="color: darkred"></i>
+        </a>
+        <br />
+    </span>
+}
+

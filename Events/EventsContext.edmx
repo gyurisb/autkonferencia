@@ -1,0 +1,451 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="EventsModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="EventsModelStoreContainer">
+    <EntitySet Name="Events" EntityType="EventsModel.Store.Events" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EventSequences" EntityType="EventsModel.Store.EventSequences" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Lecturers" EntityType="EventsModel.Store.Lecturers" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Attendees" EntityType="EventsModel.Store.Attendees" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Sponsors" EntityType="EventsModel.Store.Sponsors" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="SeqSponsors" EntityType="EventsModel.Store.SeqSponsors" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="EventEventSequence" Association="EventsModel.Store.EventEventSequence">
+      <End Role="Event" EntitySet="Events" />
+      <End Role="EventSequence" EntitySet="EventSequences" />
+    </AssociationSet>
+    <AssociationSet Name="ParticipantEvent" Association="EventsModel.Store.ParticipantEvent">
+      <End Role="Participant" EntitySet="Attendees" />
+      <End Role="Event" EntitySet="Events" />
+    </AssociationSet>
+    <AssociationSet Name="SponsorEvent" Association="EventsModel.Store.SponsorEvent">
+      <End Role="Sponsor" EntitySet="Sponsors" />
+      <End Role="Event" EntitySet="Events" />
+    </AssociationSet>
+    <AssociationSet Name="SeqSponsorEventSequence" Association="EventsModel.Store.SeqSponsorEventSequence">
+      <End Role="SeqSponsor" EntitySet="SeqSponsors" />
+      <End Role="EventSequence" EntitySet="EventSequences" />
+    </AssociationSet>
+    <AssociationSet Name="EventLecturer" Association="EventsModel.Store.EventLecturer">
+      <End Role="Event" EntitySet="Events" />
+      <End Role="Lecturer" EntitySet="Lecturers" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Events">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Time" Type="datetime" Nullable="false" />
+    <Property Name="Place" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="EventSequenceId" Type="int" Nullable="true" />
+    <Property Name="AttendeeLimit" Type="smallint" Nullable="true" />
+    <Property Name="TimeLength" Type="smallint" Nullable="false" />
+    <Property Name="Documents" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="AttendRequirements" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="IsLocked" Type="bit" Nullable="false" />
+    <Property Name="IncludeSponsors" Type="bit" Nullable="false" />
+    <Property Name="AttendMessage" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="EventSequences">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="255" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="StartDate" Type="datetime" Nullable="true" />
+    <Property Name="EndDate" Type="datetime" Nullable="true" />
+    <Property Name="WeekTimes" Type="nvarchar" Nullable="true" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Lecturers">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Email" Type="nvarchar" Nullable="true" MaxLength="50" />
+    <Property Name="Avatar" Type="nvarchar" Nullable="true" MaxLength="255" />
+    <Property Name="Url" Type="nvarchar" Nullable="true" MaxLength="255" />
+    <Property Name="CompanyRank" Type="nvarchar" Nullable="true" MaxLength="255" />
+    <Property Name="Introduction" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="EventId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Attendees">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EventId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" Nullable="true" MaxLength="255" />
+    <Property Name="Company" Type="nvarchar" Nullable="true" MaxLength="255" />
+    <Property Name="Email" Type="nvarchar" Nullable="true" MaxLength="255" />
+    <Property Name="Other" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="Sponsors">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EventId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Icon" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <EntityType Name="SeqSponsors">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EventSequenceId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Url" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Icon" Type="nvarchar(max)" Nullable="true" />
+  </EntityType>
+  <Association Name="EventEventSequence">
+    <End Role="Event" Type="EventsModel.Store.Events" Multiplicity="*" />
+    <End Role="EventSequence" Type="EventsModel.Store.EventSequences" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="EventSequence">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Event">
+        <PropertyRef Name="EventSequenceId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="ParticipantEvent">
+    <End Role="Participant" Type="EventsModel.Store.Attendees" Multiplicity="*" />
+    <End Role="Event" Type="EventsModel.Store.Events" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Event">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Participant">
+        <PropertyRef Name="EventId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SponsorEvent">
+    <End Role="Sponsor" Type="EventsModel.Store.Sponsors" Multiplicity="*" />
+    <End Role="Event" Type="EventsModel.Store.Events" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Event">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Sponsor">
+        <PropertyRef Name="EventId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SeqSponsorEventSequence">
+    <End Role="SeqSponsor" Type="EventsModel.Store.SeqSponsors" Multiplicity="*" />
+    <End Role="EventSequence" Type="EventsModel.Store.EventSequences" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="EventSequence">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="SeqSponsor">
+        <PropertyRef Name="EventSequenceId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="EventLecturer">
+    <End Role="Event" Type="EventsModel.Store.Events" Multiplicity="1" />
+    <End Role="Lecturer" Type="EventsModel.Store.Lecturers" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Event">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Lecturer">
+        <PropertyRef Name="EventId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="EventsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Event">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Time" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Place" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="EventSequence" Relationship="EventsModel.EventEventSequence" FromRole="Event" ToRole="EventSequence" />
+          <Property Name="EventSequenceId" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="Attendees" Relationship="EventsModel.ParticipantEvent" FromRole="Event" ToRole="Participant" />
+          <Property Name="AttendeeLimit" Type="Int16" Nullable="true" />
+          <Property Name="TimeLength" Type="Int16" Nullable="false" />
+          <Property Name="Documents" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Sponsors" Relationship="EventsModel.SponsorEvent" FromRole="Event" ToRole="Sponsor" />
+          <Property Name="AttendRequirements" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IsLocked" Type="Boolean" Nullable="false" />
+          <Property Name="IncludeSponsors" Type="Boolean" Nullable="false" />
+          <Property Name="AttendMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Lecturers" Relationship="EventsModel.EventLecturer" FromRole="Event" ToRole="Lecturer" />
+        </EntityType>
+        <EntityType Name="EventSequence">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <Property Name="WeekTimes" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Events" Relationship="EventsModel.EventEventSequence" FromRole="EventSequence" ToRole="Event" />
+          <NavigationProperty Name="Sponsors" Relationship="EventsModel.SeqSponsorEventSequence" FromRole="EventSequence" ToRole="SeqSponsor" />
+        </EntityType>
+        <EntityType Name="Lecturer">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Avatar" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Url" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyRank" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Introduction" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Event" Relationship="EventsModel.EventLecturer" FromRole="Lecturer" ToRole="Event" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="EventsEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Events" EntityType="Self.Event" />
+          <EntitySet Name="EventSequences" EntityType="Self.EventSequence" />
+          <EntitySet Name="Lecturers" EntityType="Self.Lecturer" />
+          <AssociationSet Name="EventEventSequence" Association="EventsModel.EventEventSequence">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="EventSequence" EntitySet="EventSequences" />
+          </AssociationSet>
+          <EntitySet Name="Attendees" EntityType="EventsModel.Attendee" />
+          <AssociationSet Name="ParticipantEvent" Association="EventsModel.ParticipantEvent">
+            <End Role="Participant" EntitySet="Attendees" />
+            <End Role="Event" EntitySet="Events" />
+          </AssociationSet>
+          <EntitySet Name="Sponsors" EntityType="EventsModel.Sponsor" />
+          <AssociationSet Name="SponsorEvent" Association="EventsModel.SponsorEvent">
+            <End Role="Sponsor" EntitySet="Sponsors" />
+            <End Role="Event" EntitySet="Events" />
+          </AssociationSet>
+          <EntitySet Name="SeqSponsors" EntityType="EventsModel.SeqSponsor" />
+          <AssociationSet Name="SeqSponsorEventSequence" Association="EventsModel.SeqSponsorEventSequence">
+            <End Role="SeqSponsor" EntitySet="SeqSponsors" />
+            <End Role="EventSequence" EntitySet="EventSequences" />
+          </AssociationSet>
+          <AssociationSet Name="EventLecturer" Association="EventsModel.EventLecturer">
+            <End Role="Event" EntitySet="Events" />
+            <End Role="Lecturer" EntitySet="Lecturers" />
+          </AssociationSet>
+        </EntityContainer>
+        <Association Name="EventEventSequence">
+          <End Type="EventsModel.Event" Role="Event" Multiplicity="*" />
+          <End Type="EventsModel.EventSequence" Role="EventSequence" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="EventSequence">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Event">
+              <PropertyRef Name="EventSequenceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Attendee">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Event" Relationship="EventsModel.ParticipantEvent" FromRole="Participant" ToRole="Event" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" Unicode="true" FixedLength="false" />
+          <Property Name="Company" Type="String" Unicode="true" FixedLength="false" MaxLength="255" />
+          <Property Name="Email" Type="String" Unicode="true" FixedLength="false" MaxLength="255" />
+          <Property Name="Other" Type="String" Unicode="true" FixedLength="false" MaxLength="Max" />
+        </EntityType>
+        <Association Name="ParticipantEvent">
+          <End Type="EventsModel.Attendee" Role="Participant" Multiplicity="*" />
+          <End Type="EventsModel.Event" Role="Event" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Participant">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Sponsor">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Event" Relationship="EventsModel.SponsorEvent" FromRole="Sponsor" ToRole="Event" />
+          <Property Name="EventId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Url" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Icon" Type="String" MaxLength="Max" Unicode="true" FixedLength="false" Nullable="true" />
+        </EntityType>
+        <Association Name="SponsorEvent">
+          <End Type="EventsModel.Sponsor" Role="Sponsor" Multiplicity="*" />
+          <End Type="EventsModel.Event" Role="Event" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Sponsor">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="SeqSponsor">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="EventSequence" Relationship="EventsModel.SeqSponsorEventSequence" FromRole="SeqSponsor" ToRole="EventSequence" />
+          <Property Name="EventSequenceId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Url" Type="String" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Name="Icon" Type="String" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <Association Name="SeqSponsorEventSequence">
+          <End Type="EventsModel.SeqSponsor" Role="SeqSponsor" Multiplicity="*" />
+          <End Type="EventsModel.EventSequence" Role="EventSequence" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="EventSequence">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SeqSponsor">
+              <PropertyRef Name="EventSequenceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EventLecturer">
+          <End Type="EventsModel.Event" Role="Event" Multiplicity="1" />
+          <End Type="EventsModel.Lecturer" Role="Lecturer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Event">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Lecturer">
+              <PropertyRef Name="EventId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="EventsModelStoreContainer" CdmEntityContainer="EventsEntities">
+    <EntitySetMapping Name="Events">
+      <EntityTypeMapping TypeName="IsTypeOf(EventsModel.Event)">
+        <MappingFragment StoreEntitySet="Events">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Time" ColumnName="Time" />
+          <ScalarProperty Name="Place" ColumnName="Place" />
+          <ScalarProperty Name="EventSequenceId" ColumnName="EventSequenceId" />
+          <ScalarProperty Name="AttendeeLimit" ColumnName="AttendeeLimit" />
+          <ScalarProperty Name="TimeLength" ColumnName="TimeLength" />
+          <ScalarProperty Name="Documents" ColumnName="Documents" />
+          <ScalarProperty Name="AttendRequirements" ColumnName="AttendRequirements" />
+          <ScalarProperty Name="IsLocked" ColumnName="IsLocked" />
+          <ScalarProperty Name="IncludeSponsors" ColumnName="IncludeSponsors" />
+          <ScalarProperty Name="AttendMessage" ColumnName="AttendMessage" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EventSequences">
+      <EntityTypeMapping TypeName="IsTypeOf(EventsModel.EventSequence)">
+        <MappingFragment StoreEntitySet="EventSequences">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+          <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+          <ScalarProperty Name="WeekTimes" ColumnName="WeekTimes" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Lecturers">
+      <EntityTypeMapping TypeName="IsTypeOf(EventsModel.Lecturer)">
+        <MappingFragment StoreEntitySet="Lecturers">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Avatar" ColumnName="Avatar" />
+          <ScalarProperty Name="Url" ColumnName="Url" />
+          <ScalarProperty Name="CompanyRank" ColumnName="CompanyRank" />
+          <ScalarProperty Name="Introduction" ColumnName="Introduction" />
+          <ScalarProperty Name="EventId" ColumnName="EventId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Attendees">
+      <EntityTypeMapping TypeName="IsTypeOf(EventsModel.Attendee)">
+        <MappingFragment StoreEntitySet="Attendees">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="EventId" ColumnName="EventId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Company" ColumnName="Company" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Other" ColumnName="Other" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Sponsors">
+      <EntityTypeMapping TypeName="IsTypeOf(EventsModel.Sponsor)">
+        <MappingFragment StoreEntitySet="Sponsors">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="EventId" ColumnName="EventId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Url" ColumnName="Url" />
+          <ScalarProperty Name="Icon" ColumnName="Icon" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SeqSponsors">
+      <EntityTypeMapping TypeName="IsTypeOf(EventsModel.SeqSponsor)">
+        <MappingFragment StoreEntitySet="SeqSponsors">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="EventSequenceId" ColumnName="EventSequenceId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Url" ColumnName="Url" />
+          <ScalarProperty Name="Icon" ColumnName="Icon" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,40 @@
+﻿@model Events.Models.FileTypesModel
+@{
+    ViewBag.Title = "Fájlok feltöltése";
+}
+@Scripts.Render("~/bundles/events-upload")
+
+<div class="page-header">
+    <h2>Fájlok feltöltése az előadáshoz</h2>
+</div>
+<div class="body-content">
+    <h3>Képek</h3>
+    @createLinks(Model.Images, "imageDiv")
+    <input type="file" class="file-uploader" multiple />
+    <h3>Dokumentumok</h3>
+    @createLinks(Model.Documents, "documentDiv")
+    <input type="file" class="file-uploader" multiple />
+    <h3>Videó beágyazása</h3>
+    <textarea id="embed-html" class="form-control" style="height: 80px; max-width: 100%">@Model.EmbedHtml</textarea>
+    <p/>
+</div>
+
+<hr />
+@Html.ActionLink("Kész", "Show", "Event", new { Id = Url.RequestContext.RouteData.Values["id"] }, new { @class = "btn btn-default" })
+<dl class="dl-horizontal"></dl>
+
+@helper createLinks(string[] links, string name)
+{
+    <div id="@name" class="jumbotron file-div" style="padding: 10px; line-height: 25px; text-align: left; font-size: 14px; margin-bottom: 10px">
+        @foreach (var link in links)
+        {
+            <span>
+                <a href="@link" target="_blank">@link.Replace('\\', '/').Substring(link.LastIndexOf('/') + 1)</a>
+                <a href="@link" class="fileDeleteBtn">
+                    <i class="fa fa-times fa-lg" style="color: darkred"></i>
+                </a>
+                <br />
+            </span>
+        }
+    </div>
+}
